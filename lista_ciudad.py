@@ -68,7 +68,7 @@ class ListaCiudades():
         print('> Ciudades disponibles')
         tmp = self.head
         while tmp is not None:
-            if tmp.getContadorUnidadesMilitares() > 0:
+            if tmp.getContadorRecursos() > 0:
                 print('#Nombre: ' + str(tmp.getNombre()))
             tmp = tmp.next
 
