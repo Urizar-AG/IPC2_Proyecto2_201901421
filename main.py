@@ -1,3 +1,4 @@
+from tkinter import filedialog, Tk
 
 def menu():
     try:
@@ -14,6 +15,24 @@ def menu():
     except ValueError:
         return None
 
+def abrir():
+    win = Tk()
+    win.withdraw()
+    win.attributes('-topmost', True)#Posiciona el filedialog sobre las demás ventanas
+    ruta = filedialog.askopenfilename(
+        title = 'Seleccionar archivo',
+        initialdir = '../',
+        filetypes = (
+            ('Archivos XML', "*.xml")
+            ('Todos los archivos', '*.*')
+        )
+    )
+    if ruta is None or ruta == " " or ruta == " ":
+        win.destroy()
+        return None
+    else:
+        win.destroy()
+        return ruta
 
 if __name__== "__main__":
     opt = 0
@@ -22,7 +41,14 @@ if __name__== "__main__":
         opt = menu()
 
         if opt == 1:
-            pass
+            ruta = abrir()
+            if ruta is not None:
+                try:
+                    pass
+                except:
+                    print('> Algo salió mal y no es posible completar la lectura del archivo')
+            else:
+                print('> No se cargó ningún archivo')       
         elif opt == 2:
             pass
         elif opt == 3:
