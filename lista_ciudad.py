@@ -5,6 +5,8 @@ class ListaCiudades():
     def __init__(self):
         self.size = 0
         self.head = None
+        self.contador_ciudades_civiles = 0 #Cantidad de ciudades que tienen unidades civiles
+        self.contador_ciudades_recursos = 0 #Cantidad de ciudades que tiene celdas tipo "Recurso"
 
     #Añade al final
     def addEnd(self, nombre, filas, columnas):
@@ -51,6 +53,37 @@ class ListaCiudades():
                     anterior.next = siguiente #El nodo anterior a actual ahora apunta al nodo siguiente del actual.
                     tmp.next = None
             tmp = tmp.next
+
+    #Muestra el nombre de las ciudades donde existe por lo menos una unidad civil
+    def showCiudadesCiviles(self):
+        print('> Ciudades disponibles')
+        tmp = self.head
+        while tmp is not None:
+            if tmp.getContadorUnidadesCiviles() > 0:
+                print('# Nombre: ' + str(tmp.getNombre()))
+            tmp = tmp.next
+
+    #Muestra el nombre de las ciudades donde existe por lo menos una celda tipo "Recurso"
+    def showCiudadesRecursos(self):
+        print('> Ciudades disponibles')
+        tmp = self.head
+        while tmp is not None:
+            if tmp.getContadorUnidadesMilitares() > 0:
+                print('#Nombre: ' + str(tmp.getNombre()))
+            tmp = tmp.next
+
+    #Getters y setters
+    def getContadorCiudadesCiviles(self):
+        return self.contador_ciudades_civiles
+    
+    def setContadorCiudadesCiviles(self, cantidad):
+        self.contador_ciudades_civiles = cantidad
+
+    def getContadorCiudadesRecursos(self):
+        return self.contador_ciudades_recursos
+    
+    def setContadorCiudadesRecursos(self, cantidad):
+        self.contador_ciudades_recursos = cantidad
 
     #Devuelve el tamaño de la lista
     def getSize(self):
