@@ -6,6 +6,7 @@ class Ciudad:
         self.filas = filas
         self.columnas = columnas
         self.contador_recursos = 0 #Cantidad de celdas tipo "Recurso" que tiene la ciudad
+        self.contador_puntos_entradas = 0 #Cantidad de celdas tipo "PuntoEntrada" que tiene la ciudad
         self.contador_unidades_civiles = 0 #Cantidad de celdas tipo "UnidadCivil" que tiene la ciudad
         self.contador_unidades_militares = 0 #Cantidad de celdas tipo "UnidadMilitar" que tiene la ciudad
         self.next = None
@@ -30,6 +31,12 @@ class Ciudad:
     def setContadorRecursos(self, cantidad):
         self.contador_recursos = cantidad
     
+    def getContadorPuntosDeEntrada(self):
+        return self.contador_puntos_entradas
+    
+    def setContadorPuntosDeEntrada(self, cantidad):
+        self.contador_puntos_entradas = cantidad
+
     def getContadorUnidadesCiviles(self):
         return self.contador_unidades_civiles
     
