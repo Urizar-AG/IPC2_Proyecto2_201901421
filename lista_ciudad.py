@@ -38,12 +38,14 @@ class ListaCiudades():
                 if tmp == self.head:
                     self.head = tmp.next
                     tmp.next = None
+                    self.size -= 1 #Actualiza el tamaño de la lista
                 #Si el nodo a eliminar es el último
                 elif tmp.next is None:
                     anterior = self.head #Nodo anterior al nodo actual(el nodo actual es el que se está borrando)
                     while anterior.next.getNombre() != tmp.getNombre():
                         anterior = anterior.next
                     anterior.next = None
+                    self.size -= 1
                 #Si no es el primer nodo o el último nodo
                 else:
                     siguiente = tmp.next #Nodo siguiente al nodo actual
@@ -52,6 +54,7 @@ class ListaCiudades():
                         anterior = anterior.next
                     anterior.next = siguiente #El nodo anterior a actual ahora apunta al nodo siguiente del actual.
                     tmp.next = None
+                    self.size -= 1
             tmp = tmp.next
 
     #Muestra el nombre de las ciudades donde existe por lo menos una unidad civil
