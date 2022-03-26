@@ -67,9 +67,15 @@ class ListaRobots():
     def getContadorFighter(self):
         return self.contador_fighter
     
+    def setContadorFighter(self, cantidad):
+        self.contador_fighter = cantidad
+
     def getContadorRescue(self):
         return self.contador_rescue
 
+    def setContadorRescue(self, cantidad):
+        self.contador_rescue = cantidad
+        
     #Devuelve el tamaño de la lista    
     def getSize(self):
         return self.size
