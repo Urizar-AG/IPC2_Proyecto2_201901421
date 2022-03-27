@@ -76,9 +76,20 @@ class ListaRobots():
     def setContadorRescue(self, cantidad):
         self.contador_rescue = cantidad
         
-    #Devuelve el primer nodo de la lista
-    def getPrimero(self):
-        return self.head
+    #Devuelve el primer nodo de la lista que coincida con el tipo
+    def getPrimero(self, tipo):
+        tmp = self.head
+        if tipo == 'ChapinFighter':
+            while tmp is not None:
+                if tmp.getTipo() == 'ChapinFighter':
+                    return tmp
+                tmp = tmp.next
+        #Es ChapinRescue
+        else:
+            while tmp is not None:
+                if tmp.getTipo() == 'ChapinRescue':
+                    return tmp
+                tmp = tmp.next
         
     #Devuelve el tamaño de la lista    
     def getSize(self):

@@ -89,9 +89,20 @@ class ListaCiudades():
         self.contador_ciudades_recursos = cantidad
 
     #Devuelve el primer nodo de la lista
-    def getPrimero(self):
-        return self.head
-
+    def getPrimero(self,tipo):
+        tmp = self.head
+        if tipo == 'UnidadCivil':
+            while tmp is not None:
+                if tmp.getContadorUnidadesCiviles() > 0:
+                    return tmp
+                tmp = tmp.next
+        #Si es tipo Recurso
+        else:
+            while tmp is not None:
+                if tmp.getContadorRecursos() > 0:
+                    return tmp
+                tmp = tmp.next
+                
     #Devuelve el tamaño de la lista
     def getSize(self):
         return self.size
