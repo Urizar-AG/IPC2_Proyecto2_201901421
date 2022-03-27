@@ -76,6 +76,10 @@ class ListaRobots():
     def setContadorRescue(self, cantidad):
         self.contador_rescue = cantidad
         
+    #Devuelve el primer nodo de la lista
+    def getPrimero(self):
+        return self.head
+        
     #Devuelve el tamaño de la lista    
     def getSize(self):
         return self.size

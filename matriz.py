@@ -165,6 +165,26 @@ class MatrizOrtogonal():
         self.insertarHorizontal(nuevo, cabecera_vertical)
         self.insertarVertical(nuevo, cabecera_horizontal)
 
+    #Devuelve el primer nodo encontrado del tipo indicado por parámetro
+    def getPrimero(self, tipo):
+        tmp = self.root
+        if tipo == 'PuntoEntrada':
+            while tmp is not None:
+                tmp2 = tmp
+                while tmp2 is not None:
+                    if tmp2.getTipo() == 'PuntoEntrada':
+                        return tmp2
+                    tmp2 = tmp2.right
+                tmp = tmp.down
+        elif tipo == 'UnidadCivil':
+            while tmp is not None:
+                tmp2 = tmp
+                while tmp2 is not None:
+                    if tmp2.getTipo() == 'UnidadCivil':
+                        return tmp2
+                    tmp2 = tmp2.right
+                tmp = tmp.down
+
     def showPuntosDeEntrada(self):
         #Recorre las filas de izquierda a derecha
         #Si encuentra una celda tipo  punto de entrada, imprime la info en consola
