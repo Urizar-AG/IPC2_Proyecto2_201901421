@@ -50,6 +50,11 @@ def preguntarCoordenadas(ciudad, tipo_de_busqueda):
         y = int(input('Ingresa la coordenada Y del punto de entrada a usar: \n'))
         celda = ciudad.mapa.searchCelda(x, y)
         return celda
+    elif tipo_de_busqueda == 'Recurso':
+        x = int(input('Ingresa la coordenada X del recurso a extraer: \n'))
+        y = int(input('Ingresa la coordenada Y del recurso a extraer: \n'))
+        celda = ciudad.mapa.searchCelda(x, y)
+        return celda
 
 if __name__== "__main__":
     Ciudades = ListaCiudades()
@@ -214,10 +219,10 @@ if __name__== "__main__":
             unidad_civil = None #Unidad Civil a rescatar en la ciudad seleccionada
             if Robots.getContadorRescue() > 0:
                 if Robots.getContadorRescue() == 1:#Solo hay un chapinRescue en la lista
-                    robot = Robots.getPrimero()
+                    robot = Robots.getPrimero('ChapinRescue')
                     if Ciudades.getContadorCiudadesCiviles() > 0:
                         if Ciudades.getContadorCiudadesCiviles() == 1:
-                            ciudad = Ciudades.getPrimero()
+                            ciudad = Ciudades.getPrimero('UnidadCivil')
                             if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
                                 if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
@@ -277,7 +282,7 @@ if __name__== "__main__":
                     robot = Robots.searchRobot(nombre, 'ChapinRescue')#Obtiene el robot a utilizar
                     if Ciudades.getContadorCiudadesCiviles() > 0:
                         if Ciudades.getContadorCiudadesCiviles() == 1:
-                            ciudad = Ciudades.getPrimero()
+                            ciudad = Ciudades.getPrimero('UnidadCivil')
                             if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
                                 if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
@@ -331,9 +336,139 @@ if __name__== "__main__":
                     else:
                         print('> La misión de rescate no es posible, no hay ciudades con unidades civiles')           
             else:
-                print('> No es posible realizar está misión, no hay robots ChapinRescue en el sistema')
+                print('> No es posible realizar esta misión, no hay robots ChapinRescue en el sistema')
         elif opt == 3:
-            pass
+            #Su funcionamiento es similar al de la función 2 del menú
+            robot = None
+            ciudad = None
+            punto_de_entrada = None
+            recurso = None
+            if Robots.getContadorFighter() > 0:
+                if Robots.getContadorFighter() == 1:
+                    robot = Robots.getPrimero('ChapinFighter')
+                    if Ciudades.getContadorCiudadesRecursos() > 0:
+                        if Ciudades.getContadorCiudadesRecursos() == 1:
+                            ciudad = Ciudades.getPrimero('Recurso')
+                            if ciudad.getContadorPuntosDeEntrada() == 1:
+                                punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')
+                                if ciudad.getContadorRecursos() == 1:
+                                    recurso = ciudad.mapa.getPrimero('Recurso')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showRecursos()
+                                    print()
+                                    #Pregunta al usuario las coordenadas del recurso a extraer
+                                    recurso = preguntarCoordenadas(ciudad, 'Recurso')
+                                    #Ejecutar misión
+                            else:
+                                ciudad.mapa.showRecursos()
+                                print()
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrar')
+                                if ciudad.getContadorRecursos() == 1:
+                                    recurso = ciudad.mapa.getPrimero('Recurso')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showRecursos()
+                                    print()
+                                    #Pregunta al usuario las coordenadas del recurso a extraer
+                                    recurso = preguntarCoordenadas(ciudad, 'Recurso')
+                                    #Ejecutar misión                                
+                        else:
+                            Ciudades.showCiudadesRecursos()
+                            print()
+                            nombre = str(input('> Ingresa el nombre de la ciudad: \n'))
+                            ciudad = Ciudades.searchCiudad(nombre)
+                            if ciudad.getContadorPuntosDeEntrada() == 1:
+                                punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')
+                                if ciudad.getContadorRecursos() == 1:
+                                    recurso = ciudad.mapa.getPrimero('Recurso')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showRecursos()
+                                    print()
+                                    #Pregunta al usuario las coordenadas del recurso a extraer
+                                    recurso = preguntarCoordenadas(ciudad, 'Recurso')
+                                    #Ejecutar misión
+                            else:
+                                ciudad.mapa.showRecursos()
+                                print()
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrar')
+                                if ciudad.getContadorRecursos() == 1:
+                                    recurso = ciudad.mapa.getPrimero('Recurso')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showRecursos()
+                                    print()
+                                    #Pregunta al usuario las coordenadas del recurso a extraer
+                                    recurso = preguntarCoordenadas(ciudad, 'Recurso')
+                                    #Ejecutar misión                                
+                    else:
+                        print('> La misión de rescate no es posible, no hay ciudades con recursos por extraer')
+                else:
+                    Robots.showChapinFighter()
+                    print()
+                    nombre = str(input('> Ingresa el nombre del robot a utilizar: \n'))
+                    robot = Robots.searchRobot(nombre, 'ChapinFighter')
+                    if Ciudades.getContadorCiudadesRecursos() > 0:
+                        if Ciudades.getContadorCiudadesRecursos() == 1:
+                            ciudad = Ciudades.getPrimero('Recurso')
+                            if ciudad.getContadorPuntosDeEntrada() == 1:
+                                punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')
+                                if ciudad.getContadorRecursos() == 1:
+                                    recurso = ciudad.mapa.getPrimero('Recurso')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showRecursos()
+                                    print()
+                                    #Pregunta al usuario las coordenadas del recurso a extraer
+                                    recurso = preguntarCoordenadas(ciudad, 'Recurso')
+                                    #Ejecutar misión
+                            else:
+                                ciudad.mapa.showRecursos()
+                                print()
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrar')
+                                if ciudad.getContadorRecursos() == 1:
+                                    recurso = ciudad.mapa.getPrimero('Recurso')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showRecursos()
+                                    print()
+                                    #Pregunta al usuario las coordenadas del recurso a extraer
+                                    recurso = preguntarCoordenadas(ciudad, 'Recurso')
+                                    #Ejecutar misión                                
+                        else:
+                            Ciudades.showCiudadesRecursos()
+                            print()
+                            nombre = str(input('Ingresa el nombre de la ciudad: \n'))
+                            ciudad = Ciudades.searchCiudad(nombre)
+                            if ciudad.getContadorPuntosDeEntrada() == 1:
+                                punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')
+                                if ciudad.getContadorRecursos() == 1:
+                                    recurso = ciudad.mapa.getPrimero('Recurso')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showRecursos()
+                                    print()
+                                    #Pregunta al usuario las coordenadas del recurso a extraer
+                                    recurso = preguntarCoordenadas(ciudad, 'Recurso')
+                                    #Ejecutar misión
+                            else:
+                                ciudad.mapa.showRecursos()
+                                print()
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrar')
+                                if ciudad.getContadorRecursos() == 1:
+                                    recurso = ciudad.mapa.getPrimero('Recurso')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showRecursos()
+                                    print()
+                                    #Pregunta al usuario las coordenadas del recurso a extraer
+                                    recurso = preguntarCoordenadas(ciudad, 'Recurso')
+                                    #Ejecutar misión                                
+                    else:
+                        print('> La misión de rescate no es posible, no hay ciudades con recursos por extraer')
+            else:
+                print('> No es posible realizar esta misión, no hay robots ChapinFighter en el sistema')
         elif opt == 4:
             print('> Gracias por usar el programa')
         else:
