@@ -184,6 +184,14 @@ class MatrizOrtogonal():
                         return tmp2
                     tmp2 = tmp2.right
                 tmp = tmp.down
+        elif tipo == 'Recurso':
+            while tmp is not None:
+                tmp2 = tmp
+                while tmp2 is not None:
+                    if tmp2.getTipo() == 'Recurso':
+                        return tmp2
+                    tmp2 = tmp2.right
+                tmp = tmp.down
 
     def showPuntosDeEntrada(self):
         #Recorre las filas de izquierda a derecha
