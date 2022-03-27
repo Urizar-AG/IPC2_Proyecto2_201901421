@@ -39,6 +39,18 @@ def abrir():
         win.destroy()
         return ruta
 
+def preguntarCoordenadas(ciudad, tipo_de_busqueda):
+    if tipo_de_busqueda == 'UnidadCivil':
+        x = int(input('Ingresa la coordenda X de la unidad civil a rescatar: \n'))
+        y = int(input('Ingresa la coordenda Y de la unidad civil a rescatar: \n'))
+        celda = ciudad.mapa.searchCelda(x, y)
+        return celda
+    elif tipo_de_busqueda == 'PuntoEntrada':
+        x = int(input('Ingresa la coordenada X del punto de entrada a usar: \n'))
+        y = int(input('Ingresa la coordenada Y del punto de entrada a usar: \n'))
+        celda = ciudad.mapa.searchCelda(x, y)
+        return celda
+
 if __name__== "__main__":
     Ciudades = ListaCiudades()
     Robots = ListaRobots()
@@ -190,12 +202,136 @@ if __name__== "__main__":
                                 #Si el robot no existe en la lista
                                 else:
                                     Robots.addEnd(nombre, tipo)
+                    print('> Carga de datos exitosa')
                 except:
                     print('> Algo salió mal y no es posible completar la lectura del archivo')
             else:
                 print('> No se cargó ningún archivo')       
         elif opt == 2:
-            pass
+            robot = None #Robot con el que se va a realizar la misión
+            ciudad = None #Ciudad donde se va a realizar la misión
+            punto_de_entrada = None #Punto de entrada a utilizar, en la ciudad seleccionada
+            unidad_civil = None #Unidad Civil a rescatar en la ciudad seleccionada
+            if Robots.getContadorRescue() > 0:
+                if Robots.getContadorRescue() == 1:#Solo hay un chapinRescue en la lista
+                    robot = Robots.getPrimero()
+                    if Ciudades.getContadorCiudadesCiviles() > 0:
+                        if Ciudades.getContadorCiudadesCiviles() == 1:
+                            ciudad = Ciudades.getPrimero()
+                            if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
+                                punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
+                                if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
+                                    unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')#Se obtiene directamente de la matriz sin preguntar al usuario
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showUnidadesCiviles()
+                                    print()
+                                    #Pregunta al usuario las coordenadas de la unidad civil que quiere rescatar
+                                    unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
+                                    #Ejecutar misión
+                            else:
+                                ciudad.mapa.showPuntosDeEntrada()
+                                print()
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
+                                if ciudad.getContadorUnidadesCiviles() == 1:
+                                    unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showUnidadesCiviles()
+                                    print()
+                                    unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
+                                    #Ejecutar misión                                
+                        else:
+                            Ciudades.showCiudadesCiviles()
+                            print()
+                            nombre = str(input('Ingresa el nombre de la ciudad: \n'))#Pregunta el nombre de la ciudad donde se va a realizar la misión
+                            ciudad = Ciudades.searchCiudad(nombre)#Obtiene la ciudad
+                            if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
+                                punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
+                                if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
+                                    unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')#Se obtiene directamente de la matriz sin preguntar al usuario
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showUnidadesCiviles()
+                                    print()
+                                    unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
+                                    #Ejecutar misión
+                            else:                          
+                                ciudad.mapa.showPuntosDeEntrada()
+                                print()
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
+                                if ciudad.getContadorUnidadesCiviles() == 1:
+                                    unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showUnidadesCiviles()
+                                    print()
+                                    unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
+                                    #Ejecutar misión    
+                    else:
+                        print('> La misión de rescate no es posible, no hay ciudades con unidades civiles')
+                else:
+                    Robots.showChapinRescue()
+                    print()
+                    nombre = str(input('Ingresa el nombre del robot a utilizar: \n'))
+                    robot = Robots.searchRobot(nombre, 'ChapinRescue')#Obtiene el robot a utilizar
+                    if Ciudades.getContadorCiudadesCiviles() > 0:
+                        if Ciudades.getContadorCiudadesCiviles() == 1:
+                            ciudad = Ciudades.getPrimero()
+                            if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
+                                punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
+                                if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
+                                    unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')#Se obtiene directamente de la matriz sin preguntar al usuario
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showUnidadesCiviles()
+                                    print()
+                                    #Pregunta al usuario las coordenadas de la unidad civil que quiere rescatar
+                                    unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
+                                    #Ejecutar misión
+                            else:
+                                ciudad.mapa.showPuntosDeEntrada()
+                                print()
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
+                                if ciudad.getContadorUnidadesCiviles() == 1:
+                                    unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showUnidadesCiviles()
+                                    print()
+                                    unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
+                                    #Ejecutar misión                                
+                        else:
+                            Ciudades.showCiudadesCiviles()
+                            print()
+                            nombre = str(input('Ingresa el nombre de la ciudad: \n'))#Pregunta el nombre de la ciudad donde se va a realizar la misión
+                            ciudad = Ciudades.searchCiudad(nombre)#Obtiene la ciudad
+                            if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
+                                punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
+                                if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
+                                    unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')#Se obtiene directamente de la matriz sin preguntar al usuario
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showUnidadesCiviles()
+                                    print()
+                                    unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
+                                    #Ejecutar misión
+                            else:                          
+                                ciudad.mapa.showPuntosDeEntrada()
+                                print()
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
+                                if ciudad.getContadorUnidadesCiviles() == 1:
+                                    unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')
+                                    #Ejecutar misión
+                                else:
+                                    ciudad.mapa.showUnidadesCiviles()
+                                    print()
+                                    unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
+                                    #Ejecutar misión    
+                    else:
+                        print('> La misión de rescate no es posible, no hay ciudades con unidades civiles')           
+            else:
+                print('> No es posible realizar está misión, no hay robots ChapinRescue en el sistema')
         elif opt == 3:
             pass
         elif opt == 4:
