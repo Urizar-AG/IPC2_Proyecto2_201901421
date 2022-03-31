@@ -114,3 +114,16 @@ class ListaCiudades():
             return True
         else:
             return False
+
+    #Muestra el mapa de una ciudad
+    def showMapa(self, nombre_ciudad, columnas, tipo_mision):
+        #Obtiene la ciudad(nodo) que se quiere graficar
+        city = self.searchCiudad(nombre_ciudad)
+        respuesta = city.mapa.showGrafica(nombre_ciudad, columnas, tipo_mision)#Llama a la función para generar el archivo dot
+        #Si el archivo "dot" se escribio con éxito
+        if respuesta == True:
+            return True
+        #Si ocurrió un error al escribir el archivo "dot"
+        else:
+            return False
+            
