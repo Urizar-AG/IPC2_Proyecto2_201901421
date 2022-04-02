@@ -386,6 +386,15 @@ if __name__== "__main__":
                     if Ciudades.getContadorCiudadesRecursos() > 0:
                         if Ciudades.getContadorCiudadesRecursos() == 1:
                             ciudad = Ciudades.getPrimero('Recurso')
+                            res = Ciudades.showMapa(ciudad.getNombre(), ciudad.getColumnas(), 'Extraccion')
+                            if res == True:#Si retorna True -> todo salió bien
+                                #Convierte la grafica de .dot a .svg y la abre automáticamente
+                                archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Extraccion.dot'
+                                archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Extraccion.svg'
+                                system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                startfile(archivo_nombre_svg)  
+                            else:
+                                print('> No es posible mostrar gráficamente esta ciudad')                              
                             if ciudad.getContadorPuntosDeEntrada() == 1:
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')
                                 if ciudad.getContadorRecursos() == 1:
@@ -398,9 +407,10 @@ if __name__== "__main__":
                                     recurso = preguntarCoordenadas(ciudad, 'Recurso')
                                     #Ejecutar misión
                             else:
-                                ciudad.mapa.showRecursos()
+                                #ciudad.mapa.showRecursos()
+                                ciudad.mapa.showPuntosDeEntrada()
                                 print()
-                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrar')
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
                                 if ciudad.getContadorRecursos() == 1:
                                     recurso = ciudad.mapa.getPrimero('Recurso')
                                     #Ejecutar misión
@@ -415,6 +425,15 @@ if __name__== "__main__":
                             print()
                             nombre = str(input('> Ingresa el nombre de la ciudad: \n'))
                             ciudad = Ciudades.searchCiudad(nombre)
+                            res = Ciudades.showMapa(ciudad.getNombre(), ciudad.getColumnas(), 'Extraccion')
+                            if res == True:
+                                #Convierte la grafica de .dot a .svg y la abre automáticamente
+                                archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Extraccion.dot'
+                                archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Extraccion.svg'
+                                system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                startfile(archivo_nombre_svg)
+                            else:
+                                print('> No es posible mostrar gráficamente esta ciudad')
                             if ciudad.getContadorPuntosDeEntrada() == 1:
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')
                                 if ciudad.getContadorRecursos() == 1:
@@ -427,9 +446,10 @@ if __name__== "__main__":
                                     recurso = preguntarCoordenadas(ciudad, 'Recurso')
                                     #Ejecutar misión
                             else:
-                                ciudad.mapa.showRecursos()
+                                #ciudad.mapa.showRecursos()
+                                ciudad.mapa.showPuntosDeEntrada()
                                 print()
-                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrar')
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
                                 if ciudad.getContadorRecursos() == 1:
                                     recurso = ciudad.mapa.getPrimero('Recurso')
                                     #Ejecutar misión
@@ -449,6 +469,15 @@ if __name__== "__main__":
                     if Ciudades.getContadorCiudadesRecursos() > 0:
                         if Ciudades.getContadorCiudadesRecursos() == 1:
                             ciudad = Ciudades.getPrimero('Recurso')
+                            res = Ciudades.showMapa(ciudad.getNombre(), ciudad.getColumnas(), 'Extraccion')
+                            if res == True:
+                                #Convierte la grafica de .dot a .svg y la abre automáticamente
+                                archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Extraccion.dot'
+                                archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Extraccion.svg'
+                                system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                startfile(archivo_nombre_svg)
+                            else:
+                                print('> No es posible mostrar gráficamente esta ciudad')
                             if ciudad.getContadorPuntosDeEntrada() == 1:
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')
                                 if ciudad.getContadorRecursos() == 1:
@@ -461,9 +490,10 @@ if __name__== "__main__":
                                     recurso = preguntarCoordenadas(ciudad, 'Recurso')
                                     #Ejecutar misión
                             else:
-                                ciudad.mapa.showRecursos()
+                                #ciudad.mapa.showRecursos()
+                                ciudad.mapa.showPuntosDeEntrada()
                                 print()
-                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrar')
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
                                 if ciudad.getContadorRecursos() == 1:
                                     recurso = ciudad.mapa.getPrimero('Recurso')
                                     #Ejecutar misión
@@ -478,6 +508,15 @@ if __name__== "__main__":
                             print()
                             nombre = str(input('Ingresa el nombre de la ciudad: \n'))
                             ciudad = Ciudades.searchCiudad(nombre)
+                            res = Ciudades.showMapa(ciudad.getNombre(), ciudad.getColumnas(), 'Extraccion')
+                            if res == True:
+                                #Convierte la grafica de .dot a .svg y la abre automáticamente
+                                archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Extraccion.dot'
+                                archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Extraccion.svg'
+                                system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                startfile(archivo_nombre_svg)
+                            else:
+                                print('> No es posible mostrar gráficamente esta ciudad')                                
                             if ciudad.getContadorPuntosDeEntrada() == 1:
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')
                                 if ciudad.getContadorRecursos() == 1:
@@ -490,9 +529,10 @@ if __name__== "__main__":
                                     recurso = preguntarCoordenadas(ciudad, 'Recurso')
                                     #Ejecutar misión
                             else:
-                                ciudad.mapa.showRecursos()
+                                #ciudad.mapa.showRecursos()
+                                ciudad.mapa.showPuntosDeEntrada()
                                 print()
-                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrar')
+                                punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
                                 if ciudad.getContadorRecursos() == 1:
                                     recurso = ciudad.mapa.getPrimero('Recurso')
                                     #Ejecutar misión
