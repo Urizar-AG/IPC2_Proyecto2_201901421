@@ -1,6 +1,7 @@
 from tkinter import filedialog, Tk
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element, SubElement, Comment
+from os import system, startfile
 
 from lista_ciudad import ListaCiudades
 from lista_robot import ListaRobots
@@ -223,6 +224,15 @@ if __name__== "__main__":
                     if Ciudades.getContadorCiudadesCiviles() > 0:
                         if Ciudades.getContadorCiudadesCiviles() == 1:
                             ciudad = Ciudades.getPrimero('UnidadCivil')
+                            res = Ciudades.showMapa(ciudad.getNombre(), ciudad.getColumnas(), 'Rescate') #Hace la gráfica
+                            if res == True:#Si retorna True -> todo salió bien
+                                #Convierte la grafica de .dot a .svg y la abre automáticamente
+                                archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                startfile(archivo_nombre_svg)
+                            else:#Si hubo error al graficar
+                                print('> No es posible mostrar gráficamente esta ciudad')
                             if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
                                 if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
@@ -251,6 +261,15 @@ if __name__== "__main__":
                             print()
                             nombre = str(input('Ingresa el nombre de la ciudad: \n'))#Pregunta el nombre de la ciudad donde se va a realizar la misión
                             ciudad = Ciudades.searchCiudad(nombre)#Obtiene la ciudad
+                            res = Ciudades.showMapa(ciudad.getNombre(), ciudad.getColumnas(), 'Rescate')
+                            if res == True:
+                                #Convierte la grafica de .dot a .svg y la abre automáticamente
+                                archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                startfile(archivo_nombre_svg)
+                            else:
+                                print('> No es posible mostrar gráficamente esta ciudad')                                
                             if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
                                 if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
@@ -283,6 +302,15 @@ if __name__== "__main__":
                     if Ciudades.getContadorCiudadesCiviles() > 0:
                         if Ciudades.getContadorCiudadesCiviles() == 1:
                             ciudad = Ciudades.getPrimero('UnidadCivil')
+                            res = Ciudades.showMapa(ciudad.getNombre(), ciudad.getColumnas(), 'Rescate')
+                            if res == True:
+                                #Convierte la grafica de .dot a .svg y la abre automáticamente
+                                archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                startfile(archivo_nombre_svg)
+                            else:
+                                print('> No es posible mostrar gráficamente esta ciudad')
                             if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
                                 if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
@@ -311,6 +339,15 @@ if __name__== "__main__":
                             print()
                             nombre = str(input('Ingresa el nombre de la ciudad: \n'))#Pregunta el nombre de la ciudad donde se va a realizar la misión
                             ciudad = Ciudades.searchCiudad(nombre)#Obtiene la ciudad
+                            res = Ciudades.showMapa(ciudad.getNombre(), ciudad.getColumnas(), 'Rescate')
+                            if res == True:
+                                #Convierte la grafica de .dot a .svg y la abre automáticamente
+                                archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                startfile(archivo_nombre_svg)
+                            else:
+                                print('> No es posible mostrar gráficamente esta ciudad')
                             if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
                                 if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
