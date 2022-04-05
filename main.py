@@ -5,6 +5,7 @@ from os import system, startfile
 
 from lista_ciudad import ListaCiudades
 from lista_robot import ListaRobots
+from lista_ruta import ListaRutas
 
 def menu():
     try:
@@ -56,6 +57,241 @@ def preguntarCoordenadas(ciudad, tipo_de_busqueda):
         y = int(input('Ingresa la coordenada Y del recurso a extraer: \n'))
         celda = ciudad.mapa.searchCelda(x, y)
         return celda
+
+#Encuentra el camino de rescate
+def buscarCaminoRescate(origen, destino, plano):
+    camino_completado = ListaRutas() #Guarda el camino a graficar
+    camino = ListaRutas()
+    camino.addEnd(origen.getCoordenadaX(), origen.getCoordenadaY()) #Añade el nodo de partida(punto de entrada)
+
+    vecino_right = origen.right #El nodo que está a la derecha del punto de entrada
+    vecino_up = origen.up#El nodo que está arriba del punto de entrada
+    vecino_left = origen.left# El nodo que está a la izquierda del punto de entrada
+    vecino_down = origen.down#El nodo que está debajo del punto de entrada
+
+    #Si se puede avanzar hacia el vecino de la derecha
+    if vecino_right is not None:
+        #Verifica que al vecino al que se avanza no es una cabecera de la matriz
+        if vecino_right.getTipo() != 'Cabecera':
+            #Verifica que se pueda transitar por el vecino hacia el que se quiere avanzar
+            if vecino_right.getEstado() == True:
+                coordenada_x_actual = vecino_right.getCoordenadaX() 
+                coordenada_y_actual = vecino_right.getCoordenadaY() 
+                #Crea una copia del camino que se lleva recorrido
+                longitud_camino = camino.getSize()
+                copia = ListaRutas()
+                aux = camino.getFirst()
+                for i in range(longitud_camino):
+                    copia.addEnd(aux.getCoordenadaX(), aux.getCoordenadaY())
+                    aux = aux.next
+                #Añade el vecino a la copia
+                copia.addEnd(coordenada_x_actual, coordenada_y_actual)
+                #Llama a la función caminosRescate
+                caminosRescate(coordenada_x_actual, coordenada_y_actual, destino, copia, camino_completado, plano)
+    #Si se puede avanzar hacia el vecino de arriba
+    if vecino_up is not None:
+        if vecino_up.getTipo() != 'Cabecera':
+            if vecino_up.getEstado() == True:
+                coordenada_x_actual = vecino_up.getCoordenadaX() 
+                coordenada_y_actual = vecino_up.getCoordenadaY() 
+                #Crea una copia del camino que se lleva recorrido
+                longitud_camino = camino.getSize()
+                copia = ListaRutas()
+                aux = camino.getFirst()
+                for i in range(longitud_camino):
+                    copia.addEnd(aux.getCoordenadaX(), aux.getCoordenadaY())
+                    aux = aux.next
+                #Añade el vecino a la copia
+                copia.addEnd(coordenada_x_actual, coordenada_y_actual)
+                caminosRescate(coordenada_x_actual, coordenada_y_actual, destino, copia, camino_completado, plano)
+    #Si se puede avanzar hacia el vecino de la izquierda
+    if vecino_left is not None:
+        if vecino_left.getTipo() != 'Cabecera':
+            if vecino_left.getEstado() == True:
+                coordenada_x_actual = vecino_left.getCoordenadaX() 
+                coordenada_y_actual = vecino_left.getCoordenadaY() 
+                #Crea una copia del camino que se lleva recorrido
+                longitud_camino = camino.getSize()
+                copia = ListaRutas()
+                aux = camino.getFirst()
+                for i in range(longitud_camino):
+                    copia.addEnd(aux.getCoordenadaX(), aux.getCoordenadaY())
+                    aux = aux.next
+                #Añade el vecino a la copia
+                copia.addEnd(coordenada_x_actual, coordenada_y_actual)
+                caminosRescate(coordenada_x_actual, coordenada_y_actual, destino, copia, camino_completado, plano)
+    #Si se puede avanzar hacia el vecino de la derecha
+    if vecino_down is not None:
+        if vecino_down.getTipo() != 'Cabecera':
+            if vecino_down.getEstado() == True:
+                coordenada_x_actual = vecino_down.getCoordenadaX() 
+                coordenada_y_actual = vecino_down.getCoordenadaY() 
+                #Crea una copia del camino que se lleva recorrido
+                longitud_camino = camino.getSize()
+                copia = ListaRutas()
+                aux = camino.getFirst()
+                for i in range(longitud_camino):
+                    copia.addEnd(aux.getCoordenadaX(), aux.getCoordenadaY())
+                    aux = aux.next
+                #Añade el vecino a la copia
+                copia.addEnd(coordenada_x_actual, coordenada_y_actual)
+                caminosRescate(coordenada_x_actual, coordenada_y_actual, destino, copia, camino_completado, plano)
+    
+    #Retorna None si no encontro una ruta para completar la misión
+    if camino_completado.getSize() == 0:
+        return None
+    #Retorna la lista del camino seguro para el rescate
+    else:
+        return camino_completado           
+
+def caminosRescate(x_actual, y_actual, destino, camino, camino_completado, plano):
+    #Si llegó al punto de destino
+    if x_actual == destino.getCoordenadaX() and y_actual == destino.getCoordenadaY():
+        #Si la lista está vacía
+        if camino_completado.getSize() == 0:
+            #Añade el camino encontrado a la lista que guarda el camino a graficar 
+            longitud_camino = camino.getSize()
+            aux = camino.getFirst()
+            for i in range(longitud_camino):
+                camino_completado.addEnd(aux.getCoordenadaX(), aux.getCoordenadaY())
+                aux = aux.next
+        #Si encontró otro camino y es más corto que el que ya está guardado
+        elif camino.getSize() < camino_completado.getSize():
+            #Elimina el que ya está guardado
+            camino_completado.clearLista()
+            #Guarda el nuevo camino
+            longitud_camino = camino.getSize()
+            aux = camino.getFirst()
+            for i in range(longitud_camino):
+                camino_completado.addEnd(aux.getCoordenadaX(), aux.getCoordenadaY())
+                aux = aux.next
+    else:
+        nodo = plano.searchCelda(x_actual, y_actual)#Obtiene el nodo que se está evaluando actualmente
+        vecino_right = nodo.right #El nodo que está a la derecha del nodo actual
+        vecino_up = nodo.up#El nodo que está arriba del nodo actual
+        vecino_left = nodo.left# El nodo que está a la izquierda del nodo actual
+        vecino_down = nodo.down#El nodo que está debajo del nodo actual
+        
+        if vecino_right is not None:
+            if vecino_right.getTipo() != 'Cabecera':
+                if vecino_right.getEstado() == True:#Si el nodo es transitable
+                    coordenada_x_actual = vecino_right.getCoordenadaX()#Coordenada x del vecino al que se está avanzando
+                    coordenada_y_actual = vecino_right.getCoordenadaY()#Coordenada y del vecino al que se está avanzando
+                    #Crea una copia del camino
+                    longitud_camino = camino.getSize()
+                    copia = ListaRutas()
+                    aux = camino.getFirst()
+                    for i in range(longitud_camino):
+                        copia.addEnd(aux.getCoordenadaX(), aux.getCoordenadaY())
+                        aux = aux.next
+                    try:
+                        #Si el nodo no ha sido visitado, no existe en la lista
+                        if camino.search(coordenada_x_actual, coordenada_y_actual) == False:
+                            copia.addEnd(coordenada_x_actual, coordenada_y_actual)
+                            #Recursividad
+                            caminosRescate(coordenada_x_actual, coordenada_y_actual, destino, copia, camino_completado, plano)
+                        else:
+                            #Ya fue visitado no se agrega el nodo a la lista
+                            pass    
+                    except:
+                        #print(e)
+                        pass
+        if vecino_up is not None:
+            if vecino_up.getTipo() != 'Cabecera':
+                if vecino_up.getEstado() == True:#Si el nodo es transitable
+                    coordenada_x_actual = vecino_up.getCoordenadaX()#Coordenada x del vecino al que se está avanzando
+                    coordenada_y_actual = vecino_up.getCoordenadaY()#Coordenada y del vecino al que se está avanzando
+                    #Crea una copia del camino
+                    longitud_camino = camino.getSize()
+                    copia = ListaRutas()
+                    aux = camino.getFirst()
+                    for i in range(longitud_camino):
+                        copia.addEnd(aux.getCoordenadaX(), aux.getCoordenadaY())
+                        aux = aux.next
+                    try:
+                        #Si el nodo no ha sido visitado, no existe en la lista
+                        if camino.search(coordenada_x_actual, coordenada_y_actual) == False:
+                            copia.addEnd(coordenada_x_actual, coordenada_y_actual)
+                            caminosRescate(coordenada_x_actual, coordenada_y_actual, destino, copia, camino_completado, plano)
+                        else:
+                            #Ya fue visitado no se agrega el nodo a la lista
+                            pass    
+                    except:
+                        #print(e)
+                        pass      
+        if vecino_left is not None:
+            if vecino_left.getTipo() != 'Cabecera':
+                if vecino_left.getEstado() == True:#Si el nodo es transitable
+                    coordenada_x_actual = vecino_left.getCoordenadaX()#Coordenada x del vecino al que se está avanzando
+                    coordenada_y_actual = vecino_left.getCoordenadaY()#Coordenada y del vecino al que se está avanzando
+                    #Crea una copia del camino
+                    longitud_camino = camino.getSize()
+                    copia = ListaRutas()
+                    aux = camino.getFirst()
+                    for i in range(longitud_camino):
+                        copia.addEnd(aux.getCoordenadaX(), aux.getCoordenadaY())
+                        aux = aux.next
+                    try:
+                        #Si el nodo no ha sido visitado, no existe en la lista
+                        if camino.search(coordenada_x_actual, coordenada_y_actual) == False:
+                            copia.addEnd(coordenada_x_actual, coordenada_y_actual)
+                            caminosRescate(coordenada_x_actual, coordenada_y_actual, destino, copia, camino_completado, plano)
+                        else:
+                            #Ya fue visitado no se agrega el nodo a la lista
+                            pass    
+                    except:
+                        #print(e)
+                        pass         
+        if vecino_down is not None:
+            if vecino_down.getTipo() != 'Cabecera':
+                if vecino_down.getEstado() == True:#Si el nodo es transitable
+                    coordenada_x_actual = vecino_down.getCoordenadaX()#Coordenada x del vecino al que se está avanzando
+                    coordenada_y_actual = vecino_down.getCoordenadaY()#Coordenada y del vecino al que se está avanzando
+                    #Crea una copia del camino
+                    longitud_camino = camino.getSize()
+                    copia = ListaRutas()
+                    aux = camino.getFirst()
+                    for i in range(longitud_camino):
+                        copia.addEnd(aux.getCoordenadaX(), aux.getCoordenadaY())
+                        aux = aux.next
+                    try:
+                        #Si el nodo no ha sido visitado, no existe en la lista
+                        if camino.search(coordenada_x_actual, coordenada_y_actual) == False:
+                            copia.addEnd(coordenada_x_actual, coordenada_y_actual)
+                            caminosRescate(coordenada_x_actual, coordenada_y_actual, destino, copia, camino_completado, plano)
+                        else:
+                            #Ya fue visitado no se agrega el nodo a la lista
+                            pass    
+                    except:
+                        #print(e)
+                        pass   
+
+#Actualiza la lista de ciudades, sus contadores y los contadores de los nodos de la lista.
+def actualizarListaCiudades(listaCiudad, nodoCiudad, tipo_actualizacion):
+    if tipo_actualizacion == 'Rescate':
+        nuevo_contador_unidades_civiles = nodoCiudad.getContadorUnidadesCiviles() - 1 #Resta uno al contador de unidades civiles de la ciudad
+        contador_unidades_recursos = nodoCiudad.getContadorRecursos() #La cantidad de celdas Recursos que hay en la ciudad
+        nodoCiudad.setContadorUnidadesCiviles(nuevo_contador_unidades_civiles)#Actualiza el contador de unidades civiles de la ciudad
+        actualizado_contador_unidades_civiles = nodoCiudad.getContadorUnidadesCiviles()#El valor del contador de unidades civiles actualizado
+        if actualizado_contador_unidades_civiles == 0:#Si ya no hay unidades civiles en la ciudad
+            print('> No hay más unidades civiles por rescatar en la ciudad')
+            nuevo_contador_ciudades_civiles = listaCiudad.getContadorCiudadesCiviles() - 1 #Resta uno al contador de ciudades que tiene unidades civiles de la lista de ciudades
+            listaCiudad.setContadorCiudadesCiviles(nuevo_contador_ciudades_civiles)#Actualiza el contador
+            actualizado_contador_ciudades_civiles = listaCiudad.getContadorCiudadesCiviles()# Obtiene el contador actualizado
+            if actualizado_contador_ciudades_civiles == 0 and contador_unidades_recursos == 0: #Si la ciuad ya no tenia unidades recursos
+                #Ya no se puede realizar ningún tipo de misión en la ciudad
+                #se elimina de la lista
+                print('> La ciudad está limpia')
+                listaCiudad.deleteCiudad(nodoCiudad.getNombre())
+            else:
+                print('> Pero aún hay recursos por extraer de la ciudad')
+                #Ya no tiene celdas de unidades civiles, pero tiene celdas de Recursos
+                pass
+        else:
+            print('> Todavía hay uniades civiles por rescatar en la ciudad')
+            #Aún existen más unidades civiles en la ciudad.
+            pass     
+
 
 if __name__== "__main__":
     Ciudades = ListaCiudades()
@@ -233,33 +469,139 @@ if __name__== "__main__":
                                 startfile(archivo_nombre_svg)
                             else:#Si hubo error al graficar
                                 print('> No es posible mostrar gráficamente esta ciudad')
+
                             if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
                                 if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
                                     unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')#Se obtiene directamente de la matriz sin preguntar al usuario
-                                    #Ejecutar misión
+                                    
+                                    ########################################## Ejecutar misión
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()#Coordenada X de la unidad civil que se está rescatando
+                                        coordenada_y = unidad_civil.getCoordenadaY()#Coordenada Y de la unidad civil que se está rescatando
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)#Para enviar por parámetro
+                                        capacidad_final = 0 #Capacidad de combate del robot, para ChapinRescue siempre es cero, al igual que la inicial.
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')
+
                                 else:
                                     ciudad.mapa.showUnidadesCiviles()
                                     print()
                                     #Pregunta al usuario las coordenadas de la unidad civil que quiere rescatar
                                     unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
-                                    #Ejecutar misión
+                                    
+                                    ########################################## Ejecutar misión
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None:
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')
+
                             else:
                                 ciudad.mapa.showPuntosDeEntrada()
                                 print()
                                 punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
                                 if ciudad.getContadorUnidadesCiviles() == 1:
                                     unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')
-                                    #Ejecutar misión
+
+                                    ########################################## Ejecutar misión
+                                    #funcion_uno(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()#Coordenada X de la unidad civil que se está rescatando
+                                        coordenada_y = unidad_civil.getCoordenadaY()#Coordenada Y de la unidad civil que se está rescatando
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)#Para enviar por parámetro
+                                        capacidad_final = 0 #Capacidad de combate del robot, para ChapinRescue siempre es cero, al igual que la inicial.
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')
+                               
                                 else:
                                     ciudad.mapa.showUnidadesCiviles()
                                     print()
                                     unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
-                                    #Ejecutar misión                                
+
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+
                         else:
                             Ciudades.showCiudadesCiviles()
                             print()
-                            nombre = str(input('Ingresa el nombre de la ciudad: \n'))#Pregunta el nombre de la ciudad donde se va a realizar la misión
+                            nombre = str(input('> Ingresa el nombre de la ciudad: \n'))#Pregunta el nombre de la ciudad donde se va a realizar la misión
                             ciudad = Ciudades.searchCiudad(nombre)#Obtiene la ciudad
                             res = Ciudades.showMapa(ciudad.getNombre(), ciudad.getColumnas(), 'Rescate')
                             if res == True:
@@ -270,28 +612,132 @@ if __name__== "__main__":
                                 startfile(archivo_nombre_svg)
                             else:
                                 print('> No es posible mostrar gráficamente esta ciudad')                                
+                            
                             if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
                                 if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
                                     unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')#Se obtiene directamente de la matriz sin preguntar al usuario
-                                    #Ejecutar misión
+                                    
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+
                                 else:
                                     ciudad.mapa.showUnidadesCiviles()
                                     print()
                                     unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
-                                    #Ejecutar misión
+                                    
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+                            
                             else:                          
                                 ciudad.mapa.showPuntosDeEntrada()
                                 print()
                                 punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
                                 if ciudad.getContadorUnidadesCiviles() == 1:
                                     unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')
-                                    #Ejecutar misión
+                                   
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+
                                 else:
                                     ciudad.mapa.showUnidadesCiviles()
                                     print()
                                     unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
-                                    #Ejecutar misión    
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+
                     else:
                         print('> La misión de rescate no es posible, no hay ciudades con unidades civiles')
                 else:
@@ -311,29 +757,132 @@ if __name__== "__main__":
                                 startfile(archivo_nombre_svg)
                             else:
                                 print('> No es posible mostrar gráficamente esta ciudad')
+                            
                             if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
                                 if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
                                     unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')#Se obtiene directamente de la matriz sin preguntar al usuario
-                                    #Ejecutar misión
+
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+
                                 else:
                                     ciudad.mapa.showUnidadesCiviles()
                                     print()
                                     #Pregunta al usuario las coordenadas de la unidad civil que quiere rescatar
                                     unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
-                                    #Ejecutar misión
+                                   
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+                            
                             else:
                                 ciudad.mapa.showPuntosDeEntrada()
                                 print()
                                 punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
                                 if ciudad.getContadorUnidadesCiviles() == 1:
                                     unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')
-                                    #Ejecutar misión
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+                                
                                 else:
                                     ciudad.mapa.showUnidadesCiviles()
                                     print()
                                     unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
-                                    #Ejecutar misión                                
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+                               
                         else:
                             Ciudades.showCiudadesCiviles()
                             print()
@@ -348,28 +897,129 @@ if __name__== "__main__":
                                 startfile(archivo_nombre_svg)
                             else:
                                 print('> No es posible mostrar gráficamente esta ciudad')
+                           
                             if ciudad.getContadorPuntosDeEntrada() == 1:#Solo hay un punto de entrada en la ciudad
                                 punto_de_entrada = ciudad.mapa.getPrimero('PuntoEntrada')#Se obtiene directamente de la matriz sin preguntar al usuario
                                 if ciudad.getContadorUnidadesCiviles() == 1:#Solo hay una unidad civil en la ciudad
                                     unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')#Se obtiene directamente de la matriz sin preguntar al usuario
-                                    #Ejecutar misión
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+                               
                                 else:
                                     ciudad.mapa.showUnidadesCiviles()
                                     print()
                                     unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
-                                    #Ejecutar misión
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+
                             else:                          
                                 ciudad.mapa.showPuntosDeEntrada()
                                 print()
                                 punto_de_entrada = preguntarCoordenadas(ciudad, 'PuntoEntrada')
                                 if ciudad.getContadorUnidadesCiviles() == 1:
                                     unidad_civil = ciudad.mapa.getPrimero('UnidadCivil')
-                                    #Ejecutar misión
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+                                
                                 else:
                                     ciudad.mapa.showUnidadesCiviles()
                                     print()
                                     unidad_civil = preguntarCoordenadas(ciudad, 'UnidadCivil')
-                                    #Ejecutar misión    
+                                    ########################################## Ejecutar misión                                
+                                    resultado = buscarCaminoRescate(punto_de_entrada, unidad_civil, ciudad.mapa)
+                                    if resultado is not None: #Si encontro un camino para completar la misión
+                                        coordenada_x = unidad_civil.getCoordenadaX()
+                                        coordenada_y = unidad_civil.getCoordenadaY()
+                                        coordenadas_unidad_civil = str(coordenada_x) + ',' + str(coordenada_y)
+                                        capacidad_final = 0
+                                        #Genera la gráfica
+                                        res = Ciudades.showMisionRescate(ciudad.getNombre(), 'Rescate', coordenadas_unidad_civil, robot.getNombre(), robot.getCapacidadCombate(), capacidad_final, ciudad.getColumnas(), resultado)
+                                        if res == True:#Todo salio bien
+                                            #Convierte el archivo '.dot' a '.svg' y lo abre automáticamente
+                                            print('> Misión Completada')
+                                            archivo_nombre_dot = 'Ciudad_'+ciudad.getNombre()+'_Rescate.dot'
+                                            archivo_nombre_svg = 'Ciudad_'+ciudad.getNombre()+'_Rescate.svg'
+                                            system('dot -Tsvg {} -o {}'.format(archivo_nombre_dot, archivo_nombre_svg))
+                                            startfile(archivo_nombre_svg)
+                                            #La celda donde estaba la unidad civil pasa a ser una celda de tipo 'Camino'
+                                            unidad_civil.setTipo('Camino')
+                                            unidad_civil.setEstado(True)
+                                            #Actualiza la info de la lista de ciudades y de la ciudad
+                                            actualizarListaCiudades(Ciudades, ciudad, 'Rescate')
+                                        else:
+                                            print('> No es posible mostrar gráficamente esta ciudad')
+                                    else:
+                                        print('> Misión Imposible')                        
+    
                     else:
                         print('> La misión de rescate no es posible, no hay ciudades con unidades civiles')           
             else:
