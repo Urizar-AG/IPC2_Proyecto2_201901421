@@ -314,4 +314,73 @@ class MatrizOrtogonal():
             grafica.close()#Cierra la gráfica
             return False #Algo salió mal al ejecutar el código dentro del try
             print(e)
+
+    #Genera un archivo "dot" para las misiones completadas, misiones de rescate y extracción
+    def showMision(self, nombre_ciudad, tipo_mision, coordenadas, nombre_robot, capacidad_inicial, capacidad_final, columnas_ciudad, camino_mision):
+        contador = 0 #Contador para las cabeceras de la matriz
+        #Aquí el contador empieza en 0, porque será aumentado en uno en la validación de más abajo, antes de ser utilizado
+        columns = columnas_ciudad #Número de columnas que tiene la matriz
+        grafica = None
+        nombre_documento = 'Ciudad_' + nombre_ciudad + '_' + tipo_mision + '.dot'
+
+        try:
+            grafica = open(nombre_documento, 'w', encoding='UTF-8') #Crea el archivo
+            grafica.write('digraph G { \n')
+            grafica.write('    node[shape=none] \n')    
+            grafica.write('    label ="Negro: Intransitable \n Verde: Punto de entrada \n Blanco: Camino \n Rojo: Unidad militar \n Azul: Unidad Civil \n Gris: Recurso \n -------------------------------------------------------------- \n' 
+                        +' Ciudad: ' +nombre_ciudad+ ' \n Tipo de misión: ' +tipo_mision+ ' \n Unidad civil rescatada: ' +coordenadas+ ' \n Robot: ' +nombre_robot+ ' (ChapinRescue)"\n')#Texto de la grafica     
+            grafica.write('\n')
+            grafica.write('    nodo [label=< \n')             
+            grafica.write('        <TABLE border="1" cellspacing="2" cellpadding="20" bgcolor="white"> \n')#Inicio de la tabla
+
+            tmp = self.root
+            #Recorre las filas por columnas
+            while tmp is not None:
+                tmp2 = tmp
+                grafica.write('                <TR>\n')#Abre la fila
+                while tmp2 is not None:
+                    #Escribe las columnas
+                    if tmp2.getTipo() == 'Intransitable':
+                        grafica.write('                <TD border="1"  bgcolor="#000000"></TD> \n')#000000 -> Negro
+                    elif tmp2.getTipo() == 'Camino':
+                        paso = camino_mision.search(tmp2.getCoordenadaX(), tmp2.getCoordenadaY())#Si el robot paso por esa celda
+                        if paso == False:
+                            grafica.write('                <TD border="1"  bgcolor="#FFFFFF"></TD> \n')#FFFFFF -> Blanco
+                        else:
+                            grafica.write('                <TD border="1"  bgcolor="#F2D587"></TD> \n')#F2D587 -> Beige
+                    elif tmp2.getTipo() == 'PuntoEntrada':
+                        grafica.write('                <TD border="1"  bgcolor="#00DD00"></TD> \n')#00DD00 -> Verde
+                    elif tmp2.getTipo() == 'UnidadCivil':
+                        grafica.write('                <TD border="1"  bgcolor="#08AEF5"></TD> \n')#08AEF5 -> Azúl    
+                    elif tmp2.getTipo() == 'Recurso':
+                        grafica.write('                <TD border="1"  bgcolor="#9B9B9B"></TD> \n')#9B9B9B -> Gris
+                    elif tmp2.getTipo() == 'UnidadMilitar':
+                        grafica.write('                <TD border="1"  bgcolor="#FF1E1E"></TD> \n')#ff1e1e -> Rojo
+                    elif tmp2.getTipo() == 'Cabecera':
+                        #Para el nodo raíz
+                        if tmp2.getCoordenadaX() == 0 and tmp2.getCoordenadaY() == 0:
+                            grafica.write('                <TD border="1"  bgcolor="#FFFFFF">00</TD> \n')
+                        else:
+                            #Si el contador es menor que el número de columnas
+                            if contador < columns:
+                                contador += 1
+                            else:
+                                #Al recorrer las filas por columnas, primer se recorre la filas de las cabeceras horizontales
+                                #Las cabeceras verticales se van agregando conforme se van agregando las filas
+                                #Y la númeración de las filas en este caso empieza en 1 (exceptuando el nodo raíz que es 0,0) es necesario reiniciar
+                                #el contador a 1 y no a 0.
+                                contador = 1
+                            grafica.write('                <TD border="1"  bgcolor="#FFFFFF">'+str(contador)+'</TD> \n')#Nodos cabecera 
+                    tmp2 = tmp2.right#Cambio a la siguiente columna
+                grafica.write('                </TR>\n')#Cierra la fila
+                tmp = tmp.down#Cambio a la siguiente fila
+            grafica.write('    </TABLE>>]; \n')#Cierra el ndod
+            grafica.write('}')#Cierra el digraph
+            grafica.close()#Cierra el archivo
             
+            #Si no hubo problema al graficar
+            return True
+        except:
+            grafica.close()#Cierra la gráfica
+            return False #Algo salió mal al graficar
+

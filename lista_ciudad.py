@@ -126,4 +126,23 @@ class ListaCiudades():
         #Si ocurrió un error al escribir el archivo "dot"
         else:
             return False
-            
+
+    #Muestra el mapa de una ciudad con el camino a seguir para la misión        
+    def showMisionRescate(self, nombre_ciudad, tipo_mision, coordenadas, nombre_robot, capacidad_inicial, capacidad_final, columnas_ciudad, camino_mision):
+        #nombre_ciudad -> es el nombre de la ciudad donde se hizo la misión
+        #tipo_mision -> Rescate o Extraccion
+        #coordenadas -> string de las coordenadas de la unidad civil rescatada o recurso extraído (1,50) ; (6,14)
+        #nombre_robot -> nombre del robot utilizado en la misión
+        #capacidad_inicial -> capacidad inicial de combate del robot
+        #capacidad_final -> capacidad final de combate del robot
+        #columnas_ciudad -> número de columnas del mapa de la ciudad
+        #camino_mision -> Lista enlazada con las coordenadas de las celdas del camino usado para completar la misión
+        
+        city = self.searchCiudad(nombre_ciudad)
+        respuesta = city.mapa.showMision(nombre_ciudad, tipo_mision, coordenadas, nombre_robot, capacidad_inicial, capacidad_final, columnas_ciudad, camino_mision)
+        #Si el archivo "dot" se escribió con éxito
+        if respuesta == True:
+            return True
+        #Si ocurrió un error al escribir el archivo "dot"
+        else:
+            return False
