@@ -288,7 +288,7 @@ def actualizarListaCiudades(listaCiudad, nodoCiudad, tipo_actualizacion):
                 #Ya no tiene celdas de unidades civiles, pero tiene celdas de Recursos
                 pass
         else:
-            print('> Todavía hay uniades civiles por rescatar en la ciudad')
+            print('> Todavía hay unidades civiles por rescatar en la ciudad')
             #Aún existen más unidades civiles en la ciudad.
             pass     
 
